@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A little book-layouting tool powered by pug and pupetteer",
   "main": "index.js",
+  "repository": "https://github.com/lover-drive/printshop",
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "update": "npm run build && sudo npm i -g ."
