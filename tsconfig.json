@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"allowJs": false,
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"target": "ESNext",
+		"outDir": "dist"
+	},
+	"include": [
+		"src/**/*.ts"
+	]
+}
