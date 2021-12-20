@@ -14,11 +14,30 @@ export default function export_pdf (config: Config) {
 	return async (url) => {
 		runServer(config)
 
-		const browser = await puppeteer.launch({ headless: true })
+		let browser: puppeteer.Browser = null
+
+		if (config.puppeteer) {
+			if (config.puppeteer.browser == 'firefox') console.log('\x1b[33m%s\x1b[0m', 'WARNING: You\'re using Firefox as the printshop backend. Make sure that you\'ve specified puppeteer.extra_pdf.format property in your config.yaml, as Firefox ignores @page CSS rule.')
+
+			const fetcher: puppeteer.BrowserFetcher = (puppeteer as any).createBrowserFetcher({
+				product: config.puppeteer.browser
+			})
+	
+			const fetcher_data = await fetcher.download(config.puppeteer.revision)
+			browser = await puppeteer.launch({
+				headless: true,
+
+				product: fetcher_data.product as any,
+				executablePath: fetcher_data.executablePath
+			})
+
+		} else {
+			browser = await puppeteer.launch({ headless: true })
+		}
+
 		const page = await browser.newPage()
-		await page.goto(`http://localhost:${config.dev_port}${url || config.pdf.default_url}`, {
-			waitUntil: 'networkidle0'
-		})
+		await page.goto(`http://localhost:${config.dev_port}${url || config.pdf.default_url}`)
+		await page.waitForTimeout(1000)
 
 		const filePath = path.join(os.tmpdir(), `${config.name || 'output'}.pdf`)
 
@@ -68,7 +87,8 @@ export default function export_pdf (config: Config) {
 			},
 			preferCSSPageSize: true,
 			path: filePath,
-			printBackground: true
+			printBackground: true,
+			...config.puppeteer?.extra_pdf || {}
 		})
 
 		postprocess_pdf(path.resolve(filePath), pdfmarks_path, config)

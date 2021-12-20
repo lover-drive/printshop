@@ -45,6 +45,13 @@ export type Config = {
 		include: string[]
 	},
 
+	puppeteer?: {
+		browser: 'chrome' | 'firefox',
+		revision: string,
+		extra_pdf?: any
+	},
+
+
 	dev_port: number
 }
 
@@ -59,6 +66,7 @@ const default_config: Config = {
 	pdf: null,
 	static_html: null,
 	epub: null,
+	puppeteer: null,
 
 	dev_port: 8080
 }
