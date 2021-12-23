@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { program } from 'commander'
-import { readConfig } from './config'
 import * as path from 'path'
+import * as fs from 'fs'
 
 import serve from './serve'
 import export_pdf from './export_pdf'
@@ -14,8 +14,11 @@ program
 	.description('Create new boilerplate printshop project')
 	.action(create)
 
+program
+	.version(require('../version.js'))
+
 try {
-	const config = readConfig(path.join(process.cwd(), 'printshop.config.yaml'))
+	const config = require('./config').default
 	
 	program
 		.command('serve')
@@ -34,7 +37,7 @@ try {
 		.description('Export content to .epub file')
 		.action(export_epub(config))
 } catch (e) {
-	
+	console.error(e)
 }
 
 program.parse(process.argv)

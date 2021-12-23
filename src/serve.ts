@@ -6,7 +6,6 @@ import { Server } from 'socket.io'
 import { createServer } from 'http'
 
 import serve_static from './serve_static'
-import serve_styles from './serve_styles'
 import { serve_content } from './serve_content'
 import hot_reload from './hot_reload'
 
@@ -18,7 +17,6 @@ export function runServer (config: Config) {
 	})
 
 	serve_static(app, config)
-	serve_styles(app, config)
 	serve_content(app, config)
 
 

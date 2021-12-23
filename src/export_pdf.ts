@@ -36,8 +36,8 @@ export default function export_pdf (config: Config) {
 		}
 
 		const page = await browser.newPage()
-		await page.goto(`http://localhost:${config.dev_port}${url || config.pdf.default_url}`)
-		await page.waitForTimeout(1000)
+		await page.goto(`http://localhost:${config.dev_port}${url || config.export.pdf.default_url}`)
+		await page.waitForTimeout(10000)
 
 		const filePath = path.join(os.tmpdir(), `${config.name || 'output'}.pdf`)
 
@@ -88,7 +88,7 @@ export default function export_pdf (config: Config) {
 			preferCSSPageSize: true,
 			path: filePath,
 			printBackground: true,
-			...config.puppeteer?.extra_pdf || {}
+			...config.puppeteer?.pdf_export || {}
 		})
 
 		postprocess_pdf(path.resolve(filePath), pdfmarks_path, config)

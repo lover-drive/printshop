@@ -1,11 +1,9 @@
-import { ElementHandle, Page, Browser } from 'puppeteer'
 import * as puppeteer from 'puppeteer'
 import path = require('path')
-import { writeFileSync } from 'fs'
+import { readFile } from 'fs/promises'
 import * as epub from 'epub-gen'
-import { Config } from './config';
-import { runServer } from './serve';
-import process_css from './css'
+import { Config } from './config'
+import { runServer } from './serve'
 
 export default function export_epub (config: Config) {
 	return async (url) => {
@@ -13,7 +11,7 @@ export default function export_epub (config: Config) {
 
 		const browser = await puppeteer.launch({ headless: true })
 		const page = await browser.newPage()
-		await page.goto(`http://localhost:${config.dev_port}${url || config.epub.default_url}`, {
+		await page.goto(`http://localhost:${config.dev_port}${url || config.export.epub.default_url}`, {
 			waitUntil: 'networkidle0'
 		})
 
@@ -37,7 +35,7 @@ export default function export_epub (config: Config) {
 			title: config.name,
 			author: config.author,
 			output: path.join(process.cwd(), `./output/${config.name || 'output'}.epub`),
-			css: await process_css(path.join(process.cwd(), config.epub.css), config),
+			css: await readFile(path.resolve(config.export.epub.css)),
 			content
 		}).promise
 		
